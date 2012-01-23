@@ -1,0 +1,223 @@
+#! /bin/sh
+
+eval_with_main_node () \
+{
+  erl -name myerlnodetmp$$ \
+      -hidden \
+      -setcookie "$cookie" \
+      -noshell -noinput \
+      -eval "MainNode = list_to_atom (\"$1\"), $2" \
+      -s erlang halt
+}
+
+get_hostname () \
+{
+  erl -name myerlnodetmp$$ -setcookie $$ -noshell -noinput -eval '
+    [ Host ] = tl (string:tokens (atom_to_list (node ()), "@")),
+    io:format ("~s~n", [ Host ])
+  ' -s init stop
+}
+
+id=`basename "$0"`
+command=${1-"status"} 
+
+if test -d /root
+then
+  HOME=${HOME-/root}
+else if test -d /var/root
+  then
+    HOME=${HOME-/var/root}
+  fi
+fi
+export HOME
+
+ERLSTART_CONFIG_FILE=${ERLSTART_CONFIG_FILE-/etc/erlstart.rc}
+export ERLSTART_CONFIG_FILE
+
+. "$ERLSTART_CONFIG_FILE"
+
+cookie=${cookie-sekret}
+user=${user-erlang}
+hostname=${hostname-`get_hostname`}
+node_name=`basename "$node_name_file"`
+full_name="$node_name@$hostname"
+shutdown_file=${shutdown_file-/var/run/erlang/erlnode.shutting_down}
+
+ERL_CRASH_DUMP=${ERL_CRASH_DUMP-/dev/null}
+export ERL_CRASH_DUMP
+
+start () \
+{
+  test "`id -u`" -eq 0 || exec sudo $0 "$@"
+
+  printf "Starting Erlang... "
+  ulimit -n 65535
+  ulimit -c unlimited  # why doesn't this work :(
+
+  if test -f "$node_name_file" &&                                     \
+     test true = "`erlstart-eval 'true' 2>/dev/null`" 2>/dev/null
+    then
+      echo "already started."
+      exit 0
+    fi
+
+  pid=`eval_with_main_node "$full_name" '
+         io:format ("~p", [
+           case rpc:call (MainNode, os, getpid, []) of
+             { badrpc, _ } -> undefined;
+             Pid -> list_to_integer (Pid)
+           end ])'`
+
+  test "$pid" -gt 0 2>/dev/null && {
+    test -f "$shutdown_file" && {
+      oldpid=`cat "$shutdown_file"`
+      test "$pid" -eq "$oldpid" && {
+        echo "shutdown in progress (pid = '$pid')." 1>&2
+        exit 1
+      }
+    }
+  }
+
+  rm -f "$shutdown_file"
+
+  # check for -s shell support
+  su -l -s /bin/sh $user -c true >/dev/null 2>/dev/null
+
+  if test $? = 0
+    then
+      dashs="-s /bin/sh"
+    else
+      dashs=""
+    fi
+
+  ${niceness+ nice -n $niceness}                                      \
+  su -l $dashs "$user" -c                                             \
+    "env cookie=\"$cookie\" erlstart-run-erlang \"$ERLSTART_CONFIG_FILE\""
+
+  eval_with_main_node "$full_name"                                    \
+      "Wait = fun (_, 0) ->
+                    failed;
+                  (Cont, Max) ->
+                    case net_adm:ping (MainNode) of
+                      pong ->
+                        ok;
+                      pang ->
+                        timer:sleep (100),
+                        Cont (Cont, Max - 1)
+                    end
+              end,
+       DontTellMe = 1000,
+       ok = Wait (Wait, DontTellMe)" || {
+    echo "" 1>&2
+    echo "$id: could not connect to node after 100 seconds" 1>&2
+    exit 1
+  }
+
+  eval_with_main_node "$full_name"                                    \
+      "Wait = fun (_, 0) ->
+                    failed;
+                  (Cont, Max) ->
+                    case rpc:call (MainNode, init, get_status, []) of
+                      { started, _ } ->
+                        ok;
+                      { starting, _ } ->
+                        timer:sleep (100),
+                        Cont (Cont, Max - 1);
+                      { Status, _ } ->
+                        { failed, Status }
+                    end
+              end,
+       DontTellMe = 1000,
+       ok = Wait (Wait, DontTellMe)" || {
+    echo "" 1>&2
+    echo "$id: node did not boot after 100 seconds" 1>&2
+    exit 1
+  }
+
+  echo "done."
+}
+
+stop () \
+{
+  test "`id -u`" -eq 0 || exec sudo $0 "$@"
+
+  printf "Stopping Erlang... "
+
+  if test ! -f "$node_name_file" ||                                   \
+     test true != "`erlstart-eval 'true' 2>/dev/null`" 2>/dev/null
+    then
+      echo "not running."
+      exit 0
+    fi
+
+  pid=`erlstart-eval 'os:getpid ()' 2>/dev/null`
+
+  test "$pid" -gt 0 2>/dev/null && {
+    printf '%s' $pid > "$shutdown_file"
+    chown $user:$user "$shutdown_file"
+  }
+
+  erlstart-eval 'init:stop ()' >/dev/null 2>/dev/null
+
+  eval_with_main_node "$full_name"                                    \
+      "Wait = fun (_, 0) ->
+                    failed;
+                  (Cont, Max) ->
+                    case net_adm:ping (MainNode) of
+                      pong ->
+                        timer:sleep (100),
+                        Cont (Cont, Max - 1);
+                      pang ->
+                        ok
+                    end
+              end,
+       DontTellMe = 1000,
+       ok = Wait (Wait, DontTellMe)" || {
+    echo "" 1>&2
+    echo "$id: node still responsive after 100 seconds" 1>&2
+    exit 1
+  }
+
+  rm -f "$node_name_file"
+
+  echo "done."
+}
+
+status () \
+{
+  HOME=/tmp   # I'd like status call to work as non-root user when run
+              # via redhat's service call, so we need something here
+  if test -f "$node_name_file" &&                                     \
+     test true = "`erlstart-eval 'true' 2>/dev/null`" 2>/dev/null
+    then
+      echo "Erlang is running"
+    else
+      echo "Erlang is not running"
+      exit 1  # non-zero return when not running is convention
+    fi
+}
+
+case ${command} in
+start)
+  start
+  ;;
+
+stop)
+  stop
+  ;;
+
+restart)
+  stop
+  start
+  ;;
+
+status)
+  status
+  ;;
+
+*)
+  echo "$id: unknown command $1" 1>&2
+  exit 1
+esac
+
+exit 0

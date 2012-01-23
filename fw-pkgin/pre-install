@@ -1,0 +1,42 @@
+#! /bin/sh
+
+set -e
+
+#---------------------------------------------------------------------
+#                            pre-install                             
+# 
+# Executed before the package is installed.
+#
+# http://code.google.com/p/fwtemplates/wiki/PackageHooks
+#---------------------------------------------------------------------
+
+arch=`arch`
+
+case "$1" in
+  install)
+    # add group for erlang
+    groupadd -g 777 -r erlang 2>/dev/null || :
+
+    # add user
+    useradd -c "Erlang Node" -u 777 -g erlang \
+      -s /bin/sh -r -d /mnt/erlang erlang 2>/dev/null || :
+
+    # fix some permissions
+    if test -d /etc/erlrc.d/nodes ; then
+      chown erlang:erlang /etc/erlrc.d/nodes
+    fi
+
+    mkdir -p /var/run/erlang
+    chown erlang:erlang /var/run/erlang
+
+    mkdir -p /mnt/erlang
+    chown erlang:erlang /mnt/erlang
+    ;;
+  upgrade)
+    # old version is $2
+    ;;
+  *)
+    ;;
+esac
+
+exit 0

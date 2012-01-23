@@ -1,0 +1,5 @@
+dnl -- include additional autoconf commands here
+dnl -- do not include AC_OUTPUT, this is called for you
+
+AC_CONFIG_FILES([etc/Makefile etc/init.d/Makefile])
+AC_CONFIG_FILES([etc/security/Makefile etc/security/limits.d/Makefile])

@@ -1,0 +1,52 @@
+* Sun Jan 22 2012 Anthony Molinaro <anthony.molinaro@openx.org> 0.3.0
+- remove riak_err, add lager
+
+* Wed Jul 13 2011 Anthony Molinaro <anthony.molinaro@openx.org> 0.2.1
+- remove erlang as a dependency so this will work with R13B04 without issue
+
+* Fri Feb 18 2011 Anthony Molinaro <anthony.molinaro@openx.org> 0.2.0
+- log rotate sasl log in erlang so we don't overwrite if there is a segfault
+- use sasl_starter and crypto_starter instead of booting sasl and starting
+crypto
+
+* Thu Feb 17 2011 Anthony Molinaro <anthony.molinaro@openx.org> 0.1.1
+- allow an additional hook file by default in /etc/erlnode.extra
+
+* Thu Feb 17 2011 Anthony Molinaro <anthony.molinaro@openx.org> 0.1.0
+- add rotation of logs at startup
+- add riak_err dependence
+- add logrotate rotation of sasl log
+- add security limits which don't work :(
+
+* Fri Aug 20 2010 Anthony Molinaro <anthony.molinaro@openx.org> 0.0.9
+- change from 10 seconds to 100 seconds when waiting for node to start/stop
+
+* Tue Jul 13 2010 Anthony Molinaro <anthony.molinaro@openx.org> 0.0.8
+- don't start inets
+- move ulimit so non-root users can run status
+
+* Tue Jun 15 2010 Anthony Molinaro <anthony.molinaro@openx.org> 0.0.7
+- up the limit of file descriptors
+
+* Fri May 14 2010 Anthony Molinaro <anthony.molinaro@openx.org> 0.0.6
+- change to /mnt for homedir
+- add a restart command
+
+* Tue Mar 30 2010 Anthony Molinaro <anthony.molinaro@openx.org> 0.0.5
+- allow status to be run as non-root user via service
+
+* Wed Feb 17 2010 Anthony Molinaro <anthony.molinaro@openx.org> 0.0.4
+- start crypto and inets since we usually need them, also erlrc_boot
+  was not being called, so installed packages were not being loaded
+
+* Wed Feb 10 2010 Anthony Molinaro <anthony.molinaro@openx.org> 0.0.3
+- making architecture specific
+
+* Wed Feb 10 2010 Anthony Molinaro <anthony.molinaro@openx.org> 0.0.2
+- dependencies were incorrect
+
+* Wed Feb 10 2010 Anthony Molinaro <anthony.molinaro@openx.org> 0.0.1
+- adding erlstart as a dependency
+
+* Wed Feb 10 2010 Anthony Molinaro <anthony.molinaro@openx.org> 0.0.0
+- initial version

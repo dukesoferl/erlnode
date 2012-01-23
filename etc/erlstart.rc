@@ -1,0 +1,41 @@
+stdout_log=/mnt/erlang/erlang.out
+stderr_log=/mnt/erlang/erlang.err
+ERL_CRASH_DUMP=/mnt/erlang/erl_crash.dump
+ERLNODE_EXTRA=${ERLNODE_EXTRA-/etc/erlnode.extra}
+
+if test -f $ERLNODE_EXTRA ; then
+  . "$ERLNODE_EXTRA"
+fi
+
+rotate () {
+  local log_prefix
+  log_prefix="$1"
+  # remove last file
+  rm -f "${log_prefix}.9"
+  # rotate rest
+  for i in 8 7 6 5 4 3 2 1 ; do
+    j=`expr $i + 1`
+    if test -f "${log_prefix}.$i" ; then
+      mv ${log_prefix}.$i ${log_prefix}.$j
+    fi
+  done
+  if test -f "${log_prefix}" ; then
+    mv "${log_prefix}" "${log_prefix}.1"
+  fi
+}
+
+run_boot="-boot start"
+node_name_file='/etc/erlrc.d/nodes/erlang'
+
+run_extra_args="$ERLNODE_EXTRA_ARGS -noshell -noinput -config /etc/erlnode.config -eval \"application:start (lager), case erlrc_boot:boot () of ok -> ok; _ -> init:stop () end\" >>$stdout_log 2>>$stderr_log &"
+
+case $command in
+  start)
+    rotate $stdout_log
+    rotate $stderr_log
+    ;;
+  restart)
+    rotate $stdout_log
+    rotate $stderr_log
+    ;;
+esac

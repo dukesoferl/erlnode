@@ -1,0 +1,5 @@
+#<domain>      <type>  <item>         <value>
+erlang         soft    core           unlimited
+erlang         hard    core           unlimited
+erlang         soft    nproc          65535
+erlang         hard    nproc          65535
