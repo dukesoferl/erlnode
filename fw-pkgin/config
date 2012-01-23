@@ -52,4 +52,4 @@ FW_RPM_POSTCREATEREPO_COMMANDS=${FW_RPM_POSTCREATEREPO_COMMANDS-"true"}
 # FW_RPM_POSTCREATEREPO_COMMANDS="gpg --detach-sign --armor repodata/repomd.xml" 
 
 # set to the directory in which version-named tags will be created
-FW_SUBVERSION_TAG_ROOT="https://svn.openx.org/private/developers/amolinaro/erlnode/tags"
+FW_SUBVERSION_TAG_ROOT="https://erlrc.googlecode.com/svn/tags/erlnode"
