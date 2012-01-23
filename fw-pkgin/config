@@ -3,7 +3,7 @@
 
 FW_PACKAGE_NAME="erlnode"
 FW_PACKAGE_VERSION="0.3.0"
-FW_PACKAGE_MAINTAINER="Anthony Molinaro <anthony.molinaro@openx.org>"
+FW_PACKAGE_MAINTAINER="Anthony Molinaro <anthonym@alumni.caltech.edu>"
 FW_PACKAGE_SHORT_DESCRIPTION="An Erlang Node with ErlRc Integration."
 FW_PACKAGE_DESCRIPTION=`cat README`
 FW_PACKAGE_ARCHITECTURE_DEPENDENT="1"
