@@ -2,9 +2,15 @@ stdout_log=/mnt/erlang/erlang.out
 stderr_log=/mnt/erlang/erlang.err
 ERL_CRASH_DUMP=/mnt/erlang/erl_crash.dump
 ERLNODE_EXTRA=${ERLNODE_EXTRA-/etc/erlnode.extra}
+ERLNODE_EXTRA_CONFIG=${ERLNODE_EXTRA_CONFIG-/etc/erlnode_extra.config}
 
 if test -f $ERLNODE_EXTRA ; then
   . "$ERLNODE_EXTRA"
+fi
+
+EXTRA_CONFIG=
+if test -f $ERLNODE_EXTRA_CONFIG ; then
+  EXTRA_CONFIG="-config $ERLNODE_EXTRA_CONFIG"
 fi
 
 rotate () {
@@ -27,7 +33,7 @@ rotate () {
 run_boot="-boot start"
 node_name_file='/etc/erlrc.d/nodes/erlang'
 
-run_extra_args="$ERLNODE_EXTRA_ARGS -noshell -noinput -config /etc/erlnode.config -eval \"application:start (lager), case erlrc_boot:boot () of ok -> ok; _ -> init:stop () end\" >>$stdout_log 2>>$stderr_log &"
+run_extra_args="$ERLNODE_EXTRA_ARGS -noshell -noinput -config /etc/erlnode.config $EXTRA_CONFIG -eval \"application:start (lager), case erlrc_boot:boot () of ok -> ok; _ -> init:stop () end\" >>$stdout_log 2>>$stderr_log &"
 
 case $command in
   start)
