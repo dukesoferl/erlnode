@@ -1,3 +1,6 @@
+* Wed Oct 24 2012 Anthony Molinaro <anthony.molinaro@openx.org> 0.3.1
+- allow a system level config override
+
 * Sun Jan 22 2012 Anthony Molinaro <anthony.molinaro@openx.org> 0.3.0
 - remove riak_err, add lager
 
