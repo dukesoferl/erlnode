@@ -1,3 +1,6 @@
+* Fri Mar 08 2013 Anthony Molinaro <anthony.molinaro@openx.org> 0.4.0
+- update lager, so start some applications prior to erlrc
+
 * Wed Oct 24 2012 Anthony Molinaro <anthony.molinaro@openx.org> 0.3.1
 - allow a system level config override
 

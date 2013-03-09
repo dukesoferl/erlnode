@@ -33,7 +33,9 @@ rotate () {
 run_boot="-boot start"
 node_name_file='/etc/erlrc.d/nodes/erlang'
 
-run_extra_args="$ERLNODE_EXTRA_ARGS -noshell -noinput -config /etc/erlnode.config $EXTRA_CONFIG -eval \"application:start (lager), case erlrc_boot:boot () of ok -> ok; _ -> init:stop () end\" >>$stdout_log 2>>$stderr_log &"
+# we start by starting lager and it's requirements so that logs are sent to
+# lager as soon as possible, then we allow erlrc to start up stuff
+run_extra_args="$ERLNODE_EXTRA_ARGS -noshell -noinput -config /etc/erlnode.config $EXTRA_CONFIG -eval \"application:start(syntax_tools), application:start(compiler), application:start (lager), case erlrc_boot:boot () of ok -> ok; _ -> init:stop () end\" >>$stdout_log 2>>$stderr_log &"
 
 case $command in
   start)
