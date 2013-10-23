@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# chkconfig: 2345 20 80
+# chkconfig: 2345 99 10
 # description: Control an Erlang node.
 
 exec erlnodectl "$@"
