@@ -14,13 +14,35 @@ FW_PACKAGE_ARCHITECTURE_DEPENDENT="1"
 # 
 # For other packaging systems, the syntax is translated for you.
 
-FW_PACKAGE_DEPENDS="erlstart, erlrc, lager, crypto_starter, sasl_starter"
+FW_PACKAGE_DEPENDS="
+  erlstart,
+  erlrc,
+  goldrush | erlang-r15b-goldrush (>= 0.1.5.0),
+  lager | erlang-r15b-lager (>= 2.0.1.0),
+  erlang-r15b-syslog (>= 1.0.2.0),
+  erlang-r15b-lager-syslog (>= 2.0.1.0),
+  crypto_starter | erlang-15b-crypto-starter,
+  sasl_starter | erlang-15b-sasl-starter,
+  erlang-r15b-compiler-starter,
+  erlang-r15b-syntax-tools-starter
+"
 FW_PACKAGE_CONFLICTS=""
 FW_PACKAGE_PROVIDES=""
 FW_PACKAGE_REPLACES=""
 FW_PACKAGE_SUGGESTS=""
 
-FW_PACKAGE_BUILD_DEPENDS="erlstart, erlrc, lager, crypto_starter, sasl_starter"
+FW_PACKAGE_BUILD_DEPENDS="
+  erlstart,
+  erlrc,
+  goldrush | erlang-r15b-goldrush (>= 0.1.5.0),
+  lager | erlang-r15b-lager (>= 2.0.1.0),
+  erlang-r15b-syslog (>= 1.0.2.0),
+  erlang-r15b-lager-syslog (>= 2.0.1.0),
+  crypto_starter | erlang-15b-crypto-starter,
+  sasl_starter | erlang-15b-sasl-starter,
+  erlang-r15b-compiler-starter,
+  erlang-r15b-syntax-tools-starter
+"
 FW_PACKAGE_BUILD_CONFLICTS=""
 
 # dupload is used for submitting debian packages to a package archive

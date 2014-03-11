@@ -1,3 +1,6 @@
+* Tue Mar 11 2013 Anthony Molinaro <anthony.molinaro@openx.org> 0.5.0
+- integrate lager syslog
+
 * Wed Oct 23 2013 Anthony Molinaro <anthony.molinaro@openx.org> 0.4.1
 - change start/stop sequence numbers
 
