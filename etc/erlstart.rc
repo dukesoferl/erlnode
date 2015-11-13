@@ -2,10 +2,34 @@ stdout_log=/mnt/erlang/erlang.out
 stderr_log=/mnt/erlang/erlang.err
 ERL_CRASH_DUMP=/mnt/erlang/erl_crash.dump
 ERLNODE_EXTRA=${ERLNODE_EXTRA-/etc/erlnode.extra}
+ERLNODE_EXTRA_BINDING=${ERLNODE_EXTRA_BINDING-/etc/erlnode_extra.binding}
 ERLNODE_EXTRA_CONFIG=${ERLNODE_EXTRA_CONFIG-/etc/erlnode_extra.config}
 
 if test -f $ERLNODE_EXTRA ; then
   . "$ERLNODE_EXTRA"
+fi
+
+if test -f $ERLNODE_EXTRA_BINDING ; then
+  . "$ERLNODE_EXTRA_BINDING"
+  # cpuset configured and available
+  if [ "$CPUSET_CONFIGURED" = "true" -a -f /usr/bin/cset ] ; then
+    # cpuset also running
+    if cset set user >/dev/null 2>&1 ; then
+      cpuset=true
+    # cpuset not running; start it
+    else
+      cset shield -c $USER_CORES -k on >/dev/null 2>&1 && cpuset=true
+    fi
+  else
+    # cpuset not configured but it is running anyway
+    cset set user >/dev/null 2>&1 && echo "Warning: cpuset running; not starting erlang in it" 1>&2
+    unset ERLNODE_EXTRA_BINDING_ARGS
+  fi
+# also warn if cset is running but configuration does not even exist
+else
+  if [ -f /usr/bin/cset ] && cset set user >/dev/null 2>&1 && [ "$CPUSET_CONFIGURED" != "true" ] ; then
+    echo "Warning: cpuset running; not starting erlang in it" 1>&2
+  fi
 fi
 
 EXTRA_CONFIG=
@@ -35,7 +59,7 @@ node_name_file='/etc/erlrc.d/nodes/erlang'
 
 # we start by starting lager and it's requirements so that logs are sent to
 # lager as soon as possible, then we allow erlrc to start up stuff
-run_extra_args="$ERLNODE_EXTRA_ARGS -noshell -noinput -config /etc/erlnode.config $EXTRA_CONFIG -eval \"[ application:start(A) || A <- [syntax_tools, compiler, goldrush, syslog, lager, lager_syslog] ], case erlrc_boot:boot () of ok -> ok; _ -> init:stop () end\" >>$stdout_log 2>>$stderr_log &"
+run_extra_args="$ERLNODE_EXTRA_ARGS $ERLNODE_EXTRA_BINDING_ARGS -noshell -noinput -config /etc/erlnode.config $EXTRA_CONFIG -eval \"[ application:start(A) || A <- [syntax_tools, compiler, goldrush, syslog, lager, lager_syslog] ], case erlrc_boot:boot () of ok -> ok; _ -> init:stop () end\" >>$stdout_log 2>>$stderr_log &"
 
 case $command in
   start)
