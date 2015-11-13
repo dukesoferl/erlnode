@@ -90,8 +90,11 @@ start () \
       dashs=""
     fi
 
+  csetsep=${cpuset+"--"}
+
   ${niceness+ nice -n $niceness}                                      \
-  su -l $dashs "$user" -c                                             \
+  ${cpuset+ cset shield -e}                                           \
+  su >/dev/null $csetsep -l $dashs "$user" -c                         \
     "env cookie=\"$cookie\" erlstart-run-erlang \"$ERLSTART_CONFIG_FILE\""
 
   eval_with_main_node "$full_name"                                    \
