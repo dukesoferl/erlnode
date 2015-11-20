@@ -100,6 +100,9 @@ start () \
   su >/dev/null $csetsep -l $dashs "$user" -c                         \
     "env cookie=\"$cookie\" erlstart-run-erlang \"$ERLSTART_CONFIG_FILE\""
 
+  ERL_CRASH_DUMP=/dev/null; export ERL_CRASH_DUMP
+  ERL_CRASH_DUMP_SECONDS=0; export ERL_CRASH_DUMP_SECONDS
+
   eval_with_main_node "$full_name"                                    \
       "Wait = fun (Cont) ->
                     case net_adm:ping (MainNode) of
@@ -144,6 +147,9 @@ stop () \
   test "`id -u`" -eq 0 || exec sudo $0 "$@"
 
   printf "Stopping Erlang... "
+
+  ERL_CRASH_DUMP=/dev/null; export ERL_CRASH_DUMP
+  ERL_CRASH_DUMP_SECONDS=0; export ERL_CRASH_DUMP_SECONDS
 
   if test ! -f "$node_name_file" ||                                   \
      test true != "`erlstart-eval 'true' 2>/dev/null`" 2>/dev/null
