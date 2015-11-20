@@ -43,6 +43,9 @@ node_name=`basename "$node_name_file"`
 full_name="$node_name@$hostname"
 shutdown_file=${shutdown_file-/var/run/erlang/erlnode.shutting_down}
 
+ERLSTART_START_TIME=${ERLSTART_START_TIME-100}
+ERLSTART_STOP_TIME=${ERLSTART_STOP_TIME-20}
+
 ERL_CRASH_DUMP=${ERL_CRASH_DUMP-/dev/null}
 export ERL_CRASH_DUMP
 
@@ -98,42 +101,38 @@ start () \
     "env cookie=\"$cookie\" erlstart-run-erlang \"$ERLSTART_CONFIG_FILE\""
 
   eval_with_main_node "$full_name"                                    \
-      "Wait = fun (_, 0) ->
-                    failed;
-                  (Cont, Max) ->
+      "Wait = fun (Cont) ->
                     case net_adm:ping (MainNode) of
                       pong ->
                         ok;
                       pang ->
                         timer:sleep (100),
-                        Cont (Cont, Max - 1)
+                        Cont (Cont)
                     end
               end,
-       DontTellMe = 1000,
-       ok = Wait (Wait, DontTellMe)" || {
+       timer:kill_after ($ERLSTART_START_TIME * 1000),
+       ok = Wait (Wait)" || {
     echo "" 1>&2
-    echo "$id: could not connect to node after 100 seconds" 1>&2
+    echo "$id: could not connect to node after $ERLSTART_START_TIME seconds" 1>&2
     exit 1
   }
 
   eval_with_main_node "$full_name"                                    \
-      "Wait = fun (_, 0) ->
-                    failed;
-                  (Cont, Max) ->
+      "Wait = fun (Cont) ->
                     case rpc:call (MainNode, init, get_status, []) of
                       { started, _ } ->
                         ok;
                       { starting, _ } ->
                         timer:sleep (100),
-                        Cont (Cont, Max - 1);
+                        Cont (Cont);
                       { Status, _ } ->
                         { failed, Status }
                     end
               end,
-       DontTellMe = 1000,
-       ok = Wait (Wait, DontTellMe)" || {
+       timer:kill_after ($ERLSTART_START_TIME * 1000),
+       ok = Wait (Wait)" || {
     echo "" 1>&2
-    echo "$id: node did not boot after 100 seconds" 1>&2
+    echo "$id: node did not boot after $ERLSTART_START_TIME seconds" 1>&2
     exit 1
   }
 
@@ -163,21 +162,19 @@ stop () \
   erlstart-eval 'init:stop ()' >/dev/null 2>/dev/null
 
   eval_with_main_node "$full_name"                                    \
-      "Wait = fun (_, 0) ->
-                    failed;
-                  (Cont, Max) ->
+      "Wait = fun (Cont) ->
                     case net_adm:ping (MainNode) of
                       pong ->
                         timer:sleep (100),
-                        Cont (Cont, Max - 1);
+                        Cont (Cont);
                       pang ->
                         ok
                     end
               end,
-       DontTellMe = 1000,
-       ok = Wait (Wait, DontTellMe)" || {
+       timer:kill_after ($ERLSTART_START_TIME * 1000),
+       ok = Wait (Wait)" || {
     echo "" 1>&2
-    echo "$id: node still responsive after 100 seconds" 1>&2
+    echo "$id: node still responsive after $ERLSTART_STOP_TIME seconds" 1>&2
     exit 1
   }
 
