@@ -1,3 +1,8 @@
+* Sat Nov 21 2015 David Hull <david.hull@openx.com> 0.6.0
+- allow override of default startup and shutdown wait time with
+  $ERLNODE_START_TIME and $ERLNODE_STOP_TIME
+- suppress crash dump from erlnodectl start and stop timeouts
+
 * Fri Nov 13 2015 Chris Varnerin <chris.varnerin@openx.com> 0.5.1
 - allow erlnode to start erlang in a cpuset
 
