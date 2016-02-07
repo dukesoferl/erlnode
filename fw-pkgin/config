@@ -1,7 +1,7 @@
 # The FW_PACKAGE_MAINTAINER field is populated with the environment
 # variable FW_PACKAGE_DEFAULT_MAINTAINER if non-empty at init time
 
-FW_PACKAGE_NAME="erlnode"
+FW_PACKAGE_NAME="${BUILD_PREFIX}erlnode"
 FW_PACKAGE_VERSION="0.6.0"
 FW_PACKAGE_MAINTAINER="Anthony Molinaro <anthonym@alumni.caltech.edu>"
 FW_PACKAGE_SHORT_DESCRIPTION="An Erlang Node with ErlRc Integration."
@@ -16,15 +16,15 @@ FW_PACKAGE_ARCHITECTURE_DEPENDENT="1"
 
 FW_PACKAGE_DEPENDS="
   erlstart,
-  erlrc,
-  goldrush | erlang-r15b-goldrush (>= 0.1.5.0),
-  lager | erlang-r15b-lager (>= 2.0.1.0),
-  erlang-r15b-syslog (>= 1.0.2.0),
-  erlang-r15b-lager-syslog (>= 2.0.1.0),
-  crypto_starter | erlang-15b-crypto-starter,
-  sasl_starter | erlang-15b-sasl-starter,
-  erlang-r15b-compiler-starter,
-  erlang-r15b-syntax-tools-starter
+  ${BUILD_PREFIX}erlrc,
+  goldrush | ${BUILD_PREFIX}goldrush (>= 0.1.5.0),
+  lager | ${BUILD_PREFIX}lager (>= 2.0.1.0),
+  ${BUILD_PREFIX}syslog (>= 1.0.2.0),
+  ${BUILD_PREFIX}lager-syslog (>= 2.0.1.0),
+  crypto_starter | ${BUILD_PREFIX}crypto-starter,
+  sasl_starter | ${BUILD_PREFIX}sasl-starter,
+  ${BUILD_PREFIX}compiler-starter,
+  ${BUILD_PREFIX}syntax-tools-starter
 "
 FW_PACKAGE_CONFLICTS=""
 FW_PACKAGE_PROVIDES=""
@@ -33,15 +33,15 @@ FW_PACKAGE_SUGGESTS=""
 
 FW_PACKAGE_BUILD_DEPENDS="
   erlstart,
-  erlrc,
-  goldrush | erlang-r15b-goldrush (>= 0.1.5.0),
-  lager | erlang-r15b-lager (>= 2.0.1.0),
-  erlang-r15b-syslog (>= 1.0.2.0),
-  erlang-r15b-lager-syslog (>= 2.0.1.0),
-  crypto_starter | erlang-15b-crypto-starter,
-  sasl_starter | erlang-15b-sasl-starter,
-  erlang-r15b-compiler-starter,
-  erlang-r15b-syntax-tools-starter
+  ${BUILD_PREFIX}erlrc,
+  goldrush | ${BUILD_PREFIX}goldrush (>= 0.1.5.0),
+  lager | ${BUILD_PREFIX}lager (>= 2.0.1.0),
+  ${BUILD_PREFIX}syslog (>= 1.0.2.0),
+  ${BUILD_PREFIX}lager-syslog (>= 2.0.1.0),
+  crypto_starter | ${BUILD_PREFIX}crypto-starter,
+  sasl_starter | ${BUILD_PREFIX}sasl-starter,
+  ${BUILD_PREFIX}compiler-starter,
+  ${BUILD_PREFIX}syntax-tools-starter
 "
 FW_PACKAGE_BUILD_CONFLICTS=""
 
