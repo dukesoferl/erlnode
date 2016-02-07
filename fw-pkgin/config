@@ -15,7 +15,7 @@ FW_PACKAGE_ARCHITECTURE_DEPENDENT="1"
 # For other packaging systems, the syntax is translated for you.
 
 FW_PACKAGE_DEPENDS="
-  erlstart,
+  ${BUILD_PREFIX}erlstart,
   ${BUILD_PREFIX}erlrc,
   goldrush | ${BUILD_PREFIX}goldrush (>= 0.1.5.0),
   lager | ${BUILD_PREFIX}lager (>= 2.0.1.0),
@@ -32,7 +32,7 @@ FW_PACKAGE_REPLACES=""
 FW_PACKAGE_SUGGESTS=""
 
 FW_PACKAGE_BUILD_DEPENDS="
-  erlstart,
+  ${BUILD_PREFIX}erlstart,
   ${BUILD_PREFIX}erlrc,
   goldrush | ${BUILD_PREFIX}goldrush (>= 0.1.5.0),
   lager | ${BUILD_PREFIX}lager (>= 2.0.1.0),
