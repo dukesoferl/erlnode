@@ -1,3 +1,7 @@
+* Wed Jun 22 2015 Anthony Molinaro <anthony.molinaro@openx.com> 0.6.1
+- update deps so they work correctly with newer framewerk
+- add recon and entop as deps so they are always available
+
 * Sat Nov 21 2015 David Hull <david.hull@openx.com> 0.6.0
 - allow override of default startup and shutdown wait time with
   $ERLNODE_START_TIME and $ERLNODE_STOP_TIME

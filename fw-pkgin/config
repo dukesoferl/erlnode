@@ -2,7 +2,7 @@
 # variable FW_PACKAGE_DEFAULT_MAINTAINER if non-empty at init time
 
 FW_PACKAGE_NAME="${BUILD_PREFIX}erlnode"
-FW_PACKAGE_VERSION="0.6.0"
+FW_PACKAGE_VERSION="0.6.1"
 FW_PACKAGE_MAINTAINER="Anthony Molinaro <anthonym@alumni.caltech.edu>"
 FW_PACKAGE_SHORT_DESCRIPTION="An Erlang Node with ErlRc Integration."
 FW_PACKAGE_DESCRIPTION=`cat README`
@@ -14,8 +14,7 @@ FW_PACKAGE_ARCHITECTURE_DEPENDENT="1"
 # 
 # For other packaging systems, the syntax is translated for you.
 
-FW_PACKAGE_DEPENDS="
-  ${BUILD_PREFIX}erlstart,
+FW_PACKAGE_DEPENDS="${BUILD_PREFIX}erlstart,
   ${BUILD_PREFIX}erlrc,
   goldrush | ${BUILD_PREFIX}goldrush (>= 0.1.5.0),
   lager | ${BUILD_PREFIX}lager (>= 2.0.1.0),
@@ -24,15 +23,16 @@ FW_PACKAGE_DEPENDS="
   crypto_starter | ${BUILD_PREFIX}crypto-starter,
   sasl_starter | ${BUILD_PREFIX}sasl-starter,
   ${BUILD_PREFIX}compiler-starter,
-  ${BUILD_PREFIX}syntax-tools-starter
+  ${BUILD_PREFIX}syntax-tools-starter,
+  ${BUILD_PREFIX}entop,
+  ${BUILD_PREFIX}recon
 "
 FW_PACKAGE_CONFLICTS=""
 FW_PACKAGE_PROVIDES=""
 FW_PACKAGE_REPLACES=""
 FW_PACKAGE_SUGGESTS=""
 
-FW_PACKAGE_BUILD_DEPENDS="
-  ${BUILD_PREFIX}erlstart,
+FW_PACKAGE_BUILD_DEPENDS="${BUILD_PREFIX}erlstart,
   ${BUILD_PREFIX}erlrc,
   goldrush | ${BUILD_PREFIX}goldrush (>= 0.1.5.0),
   lager | ${BUILD_PREFIX}lager (>= 2.0.1.0),
@@ -41,7 +41,9 @@ FW_PACKAGE_BUILD_DEPENDS="
   crypto_starter | ${BUILD_PREFIX}crypto-starter,
   sasl_starter | ${BUILD_PREFIX}sasl-starter,
   ${BUILD_PREFIX}compiler-starter,
-  ${BUILD_PREFIX}syntax-tools-starter
+  ${BUILD_PREFIX}syntax-tools-starter,
+  ${BUILD_PREFIX}entop,
+  ${BUILD_PREFIX}recon
 "
 FW_PACKAGE_BUILD_CONFLICTS=""
 
