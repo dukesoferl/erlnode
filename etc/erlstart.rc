@@ -4,6 +4,7 @@ ERL_CRASH_DUMP=/mnt/erlang/erl_crash.dump
 ERLNODE_EXTRA=${ERLNODE_EXTRA-/etc/erlnode.extra}
 ERLNODE_EXTRA_BINDING=${ERLNODE_EXTRA_BINDING-/etc/erlnode_extra.binding}
 ERLNODE_EXTRA_CONFIG=${ERLNODE_EXTRA_CONFIG-/etc/erlnode_extra.config}
+ERLNODE_OVERRIDE_CONFIG=${ERLNODE_OVERRIDE_CONFIG-/etc/erlnode_overrides.config}
 
 if test -f $ERLNODE_EXTRA ; then
   . "$ERLNODE_EXTRA"
@@ -35,6 +36,9 @@ fi
 EXTRA_CONFIG=
 if test -f $ERLNODE_EXTRA_CONFIG ; then
   EXTRA_CONFIG="-config $ERLNODE_EXTRA_CONFIG"
+fi
+if test -f $ERLNODE_OVERRIDE_CONFIG ; then
+  EXTRA_CONFIG="$EXTRA_CONFIG -config $ERLNODE_OVERRIDE_CONFIG"
 fi
 
 rotate () {

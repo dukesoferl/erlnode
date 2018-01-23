@@ -177,7 +177,7 @@ stop () \
                         ok
                     end
               end,
-       timer:kill_after ($ERLSTART_START_TIME * 1000),
+       timer:kill_after ($ERLSTART_STOP_TIME * 1000),
        ok = Wait (Wait)" || {
     echo "" 1>&2
     echo "$id: node still responsive after $ERLSTART_STOP_TIME seconds" 1>&2
