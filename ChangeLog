@@ -1,3 +1,7 @@
+* Sun Mar 11 2018 Anthony Molinaro <anthony.molinaro@openx.com> 0.7.1
+- remove starter deps as they are unnecessary
+- fix a few other deps
+
 * Tue Jan 23 2018 Anthony Molinaro <anthony.molinaro@openx.com> 0.7.0
 - update deps on lager, syslog and lager-syslog
 - fix for $ERLNODE_STOP_TIME

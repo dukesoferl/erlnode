@@ -5,7 +5,7 @@ ERLANG_VERSION=$(erl -eval 'io:format("~s", [ erlang:system_info(otp_release) ])
 BUILD_PREFIX=erlang-$(perl -e '$ARGV[0] =~ m/^(R?\d+[A-Z]*)/i and print lc($1) or die "$ARGV[0]";' "$ERLANG_VERSION")-
 
 FW_PACKAGE_NAME="${BUILD_PREFIX}erlnode"
-FW_PACKAGE_VERSION="0.7.0"
+FW_PACKAGE_VERSION="0.7.1"
 FW_PACKAGE_MAINTAINER="Anthony Molinaro <anthonym@alumni.caltech.edu>"
 FW_PACKAGE_SHORT_DESCRIPTION="An Erlang Node with ErlRc Integration."
 FW_PACKAGE_DESCRIPTION=`cat README`
@@ -19,14 +19,10 @@ FW_PACKAGE_ARCHITECTURE_DEPENDENT="1"
 
 FW_PACKAGE_DEPENDS="${BUILD_PREFIX}erlstart,
   ${BUILD_PREFIX}erlrc,
-  ${BUILD_PREFIX}goldrush (>= 0.1.6.0),
-  ${BUILD_PREFIX}lager (>= 2.1.1.0),
-  ${BUILD_PREFIX}syslog (>= 1.0.3.0),
-  ${BUILD_PREFIX}lager-syslog (>= 2.1.2.0),
-  ${BUILD_PREFIX}crypto-starter,
-  ${BUILD_PREFIX}sasl-starter,
-  ${BUILD_PREFIX}compiler-starter,
-  ${BUILD_PREFIX}syntax-tools-starter,
+  ${BUILD_PREFIX}goldrush (>= 0.1.6),
+  ${BUILD_PREFIX}lager (>= 2.1.1),
+  ${BUILD_PREFIX}syslog (>= 1.0.3),
+  ${BUILD_PREFIX}lager_syslog (>= 2.1.2) | ${BUILD_PREFIX}lager-syslog (>= 2.1.2),
   ${BUILD_PREFIX}entop,
   ${BUILD_PREFIX}recon
 "
